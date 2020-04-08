@@ -1,0 +1,7 @@
+/bin/
+
+# class file
+*.class
+
+# jar file
+*.jar
