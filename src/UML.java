@@ -63,6 +63,12 @@ public class UML {
 		}
 	}
 	
+	public static class Canvas extends JPanel{
+		public Canvas(int xSize, int ySize, int x, int y) {
+			this.setBounds(x, y, (int)(xSize*0.9), ySize);
+			this.setBackground(Color.white);
+		}
+	}
 	
 	
 	public static void main(String[] args) {
