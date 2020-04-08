@@ -6,60 +6,112 @@ import javax.swing.*;
 
 public class UML {
 
-	public static class select_button extends JButton {
-		public select_button() {
-			this.ispressed = 0;
-			this.setIcon(icons[ispressed]);
+	private static int mode = -1;
+	public static void change_mode(int n) {
+		mode = n;
+		
+	}
+
+	public static my_button[] global_bs;
+	public static void flush_icon(my_button[] bs) {
+		for(my_button b : bs) {
+			if (b.get_num() != mode) {
+				b.set_ispressed(0);
+				b.show_icon();
+			}
+		}
+	}
+	
+	public static class my_button extends JButton {
+		public my_button() {
 			this.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					change_icon();
+					show_icon();
+					if(get_ispressed() == 1) change_mode(get_num());
+					else change_mode(-1);
+					flush_icon(global_bs);
 				}
 			});
 		}
 		
 		public void change_icon() {
 			ispressed = (ispressed + 1)%2;
-			this.setIcon(icons[ispressed]);
 		}
 		
+		public void show_icon() {
+			this.setIcon(icons[ispressed]);
+		}
 
-		private ImageIcon []icons = {new ImageIcon("./img/select_icon.png"), new ImageIcon("./img/select_icon_pressed.png")};
-		private int ispressed;
+		public void set_num(int n) {
+			this.num = n;
+		}
+		public void set_ispressed(int n) {
+			this.ispressed = n;
+		}
+		public int get_num() {
+			return this.num;
+		}
+		public int get_ispressed() {
+			return ispressed;
+		}
+		public ImageIcon []icons = {new ImageIcon(), new ImageIcon()};
+		private int ispressed = -1;
+		private int num = -1;
 	}
 	
-	public static class asso_button extends JButton {
+	public static class select_button extends my_button {
+		public select_button() {
+			ImageIcon []tmpIcons = {new ImageIcon("./img/select_icon.png"), new ImageIcon("./img/select_icon_pressed.png")};
+			this.icons = tmpIcons;
+			this.change_icon();
+			this.show_icon();
+		}
+	}
+	
+	public static class asso_button extends my_button {
 		public asso_button() {
-			ImageIcon icon = new ImageIcon("./img/asso_icon.png");
-			this.setIcon(icon);
+			ImageIcon []tmpIcons = {new ImageIcon("./img/asso_icon.png"), new ImageIcon("./img/asso_icon_pressed.png")};
+			this.icons = tmpIcons;
+			this.change_icon();
+			this.show_icon();
 		}
 	}
 	
-	public static class gen_button extends JButton {
+	public static class gen_button extends my_button {
 		public gen_button() {
-			ImageIcon icon = new ImageIcon("./img/gen_icon.png");
-			this.setIcon(icon);
+			ImageIcon []tmpIcons = {new ImageIcon("./img/gen_icon.png"), new ImageIcon("./img/gen_icon_pressed.png")};
+			this.icons = tmpIcons;
+			this.change_icon();
+			this.show_icon();
 		}
 	}
 	
-	public static class com_button extends JButton {
+	public static class com_button extends my_button {
 		public com_button() {
-			ImageIcon icon = new ImageIcon("./img/com_icon.png");
-			this.setIcon(icon);
+			ImageIcon []tmpIcons = {new ImageIcon("./img/com_icon.png"), new ImageIcon("./img/com_icon_pressed.png")};
+			this.icons = tmpIcons;
+			this.change_icon();
+			this.show_icon();
 		}
 	}
 
-	public static class class_button extends JButton {
+	public static class class_button extends my_button {
 		public class_button() {
-			ImageIcon icon = new ImageIcon("./img/class_icon.png");
-			this.setIcon(icon);
+			ImageIcon []tmpIcons = {new ImageIcon("./img/class_icon.png"), new ImageIcon("./img/class_icon_pressed.png")};
+			this.icons = tmpIcons;
+			this.change_icon();
+			this.show_icon();
 		}
 	}
 
-	public static class use_class_button extends JButton {
+	public static class use_class_button extends my_button {
 		public use_class_button() {
-			ImageIcon icon = new ImageIcon("./img/use_class_icon.png");
-			this.setIcon(icon);
+			ImageIcon []tmpIcons = {new ImageIcon("./img/use_class_icon.png"), new ImageIcon("./img/use_class_icon_pressed.png")};
+			this.icons = tmpIcons;
+			this.change_icon();
+			this.show_icon();
 		}
 	}
 	
@@ -102,7 +154,7 @@ public class UML {
 		
 		int button_height = (int)(xSize*0.1);
 		
-		JButton []buttons = {
+		my_button []buttons = {
 				new select_button(), 
 				new asso_button(), 
 				new gen_button(), 
@@ -110,9 +162,12 @@ public class UML {
 				new class_button(), 
 				new use_class_button()
 		};
-		for(int i = 0; i < buttons.length; i++) {
-			buttons[i].setBounds(0, button_height*i, button_height, button_height);
-			cp.add(buttons[i]);
+		global_bs = buttons;
+		
+		for(int i = 0; i < global_bs.length; i++) {
+			global_bs[i].set_num(i);
+			global_bs[i].setBounds(0, button_height*i, button_height, button_height);
+			cp.add(global_bs[i]);
 		}
 		
 		Canvas canvas = new Canvas(xSize, ySize, button_height, 0);
