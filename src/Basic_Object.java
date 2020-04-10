@@ -31,7 +31,7 @@ public class Basic_Object {
 				current_x+(int)(obj_width/2), current_y, 
 				current_x+obj_width, current_y+(int)(obj_height/2),
 				current_x+(int)(obj_width/2), current_y+obj_height,
-				current_x, current_y+(int)(obj_height)
+				current_x, current_y+(int)(obj_height/2)
 		};
 		for(int port_num = 0; port_num < 4; port_num++) {
 			port[port_num][0] = pos[count];

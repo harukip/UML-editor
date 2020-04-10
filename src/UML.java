@@ -6,6 +6,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
+
 public class UML {
 
 	private static int mode = -1, depth = 0;
@@ -20,6 +21,17 @@ public class UML {
 	}
 	public static int get_top_depth() {
 		return depth;
+	}
+	public static int nearest_port(int[][] port, int[] pos) {
+		int min = 9999, nearest = -1;
+		for(int port_num = 0; port_num < 4; port_num++) {
+			int tmp = (int)(Math.sqrt((Math.pow((port[port_num][0] - pos[0]), 2) + Math.pow((port[port_num][1] - pos[1]), 2))));
+			if(tmp < min) {
+				nearest = port_num;
+				min = tmp;
+			}
+		}
+		return nearest;
 	}
 	public static my_button[] global_bs;
 	public static void flush_icon(my_button[] bs) {
@@ -133,6 +145,9 @@ public class UML {
 			// TODO Auto-generated method stub
 			super.draw(g);
 			g.drawRect(this.get_x(), this.get_y(), this.get_width(), this.get_height());
+			for(int port_num = 0; port_num < 4; port_num++) {
+				g.drawRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+			}
 		}
 	}
 	
@@ -147,30 +162,65 @@ public class UML {
 			// TODO Auto-generated method stub
 			super.draw(g);
 			g.drawOval(this.get_x(), this.get_y(), this.get_width(), this.get_height());
-		}
-	}
-	
-	public static class Line_Object extends Basic_Object{
-		public Line_Object() {
-			// TODO Auto-generated constructor stub
+			for(int port_num = 0; port_num < 4; port_num++) {
+			g.drawRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+			}
 		}
 	}
 	
 	public static class Asso_Line extends Line_Object{
-		public Asso_Line() {
+		public Asso_Line(int[] start, int[]end) {
 			this.set_type(1);
+			this.set_start_end(start, end);
+		}
+		@Override
+		public void draw(Graphics g) {
+			// TODO Auto-generated method stub
+			super.draw(g);
+			int end_port = this.get_obj_link()[1][1];
+			int[] shift_point = this.find_unit(this.get_start_end()[0], this.get_start_end()[1]);
+			int[][] arrow_point = new int[2][2];
+			int[] angle = {-30, 30};
+			for(int i = 0; i < 2; i++) {
+				arrow_point[i] = rotate_shift(this.get_start_end()[1], shift_point, Math.toRadians(angle[i]));
+			}
+			g.drawLine(
+					this.get_start_end()[0][0], this.get_start_end()[0][1], 
+					this.get_start_end()[1][0], this.get_start_end()[1][1]);
+			g.drawLine(
+					arrow_point[0][0], arrow_point[0][1], 
+					this.get_start_end()[1][0], this.get_start_end()[1][1]);
+			g.drawLine(
+					arrow_point[1][0], arrow_point[1][1], 
+					this.get_start_end()[1][0], this.get_start_end()[1][1]);
 		}
 	}
 	
 	public static class Gen_Line extends Line_Object{
-		public Gen_Line() {
+		public Gen_Line(int[] start, int[]end) {
 			this.set_type(2);
+			this.set_start_end(start, end);
+		}
+		@Override
+		public void draw(Graphics g) {
+			// TODO Auto-generated method stub
+			super.draw(g);
+			int end_port = this.get_obj_link()[1][1];
+			int[][] shift = {{0, 20, 0, -20}, {-20, 0, 20, 0}};
+			int[] angle = {180, 270, 0, 90};
+			int[][] triangle = {{10, -10, 0}, {20, 20, 0}};
+			int[][] output_triangle = this.rotate_triangle(triangle, Math.toRadians(angle[end_port]));
+			g.drawPolygon(output_triangle[0], output_triangle[1], 3);
+			g.drawLine(
+					this.get_start_end()[0][0], this.get_start_end()[0][1], 
+					this.get_start_end()[1][0]+shift[0][end_port], this.get_start_end()[1][1]+shift[1][end_port]);
 		}
 	}
 	
 	public static class Com_Line extends Line_Object{
-		public Com_Line() {
+		public Com_Line(int[] start, int[]end) {
 			this.set_type(3);
+			this.set_start_end(start, end);
 		}
 	}
 	
@@ -180,42 +230,82 @@ public class UML {
 			this.setBackground(Color.white);
 			
 			this.addMouseListener(new MouseListener() {
-				int top, top_pos;
-				int[] obj_in_range;
+				int [] line_mode = {1, 2, 3};
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					// Select
-					if(get_mode() == 0 && top != -1) {
-						my_Objects[top_pos].set_x(e.getX());
-						my_Objects[top_pos].set_y(e.getY());
-						repaint();
+					boolean is_line = false;
+					for(int i:line_mode) {
+						if(i == get_mode()) is_line = true;
 					}
+					// Select
+					if(top != -1) {
+						if(get_mode() == 0) {
+							int diff_x = m_start_pos[0] - my_Objects[top_pos].get_x();
+							int diff_y = m_start_pos[1] - my_Objects[top_pos].get_y();
+							my_Objects[top_pos].set_x(e.getX() - diff_x);
+							my_Objects[top_pos].set_y(e.getY() - y - diff_y);
+							my_Objects[top_pos].set_port();
+							int[] lines_moved = new int[line_count];
+							int moved_count = 0;
+							for(int line = 0; line < line_count; line++) {
+								if(my_Line_Objects[line].get_obj_link()[0][0] == top_pos || my_Line_Objects[line].get_obj_link()[1][0] == top_pos) {
+									lines_moved[moved_count] = line;
+									moved_count += 1;
+								}
+							}
+							for(int line = 0; line < moved_count; line++) {
+								int[] pos = new int[2];
+								int[] port = new int [2];
+								int[][] tmp = my_Line_Objects[lines_moved[line]].get_obj_link(); 
+								for(int i = 0; i < 2; i++) {
+									pos[i] = tmp[i][0];
+									port[i] = tmp[i][1];
+								}
+								int[][] origin_start_end = my_Line_Objects[lines_moved[line]].get_start_end();
+								if(top_pos == pos[0]) {
+									int[] new_start_pos = my_Objects[top_pos].get_port()[port[0]];
+									my_Line_Objects[lines_moved[line]].set_start_end(new_start_pos, origin_start_end[1]);
+								}
+								else{
+									int[] new_end_pos = my_Objects[top_pos].get_port()[port[1]];
+									my_Line_Objects[lines_moved[line]].set_start_end(origin_start_end[0], new_end_pos);
+								}
+							}
+						}
+						if(is_line && pressed) {
+							pressed = false;
+							int source_obj = top_pos;
+							find_top(e.getX(), e.getY() - y);
+							if(top != -1 && source_obj != top_pos) {
+								
+								int source_port = nearest_port(my_Objects[source_obj].get_port(), m_start_pos);
+								int[] start_pos = my_Objects[source_obj].get_port()[source_port];
+								int[] m_end_pos = {e.getX(), e.getY() - y}; // mouse end pos
+								int end_port = nearest_port(my_Objects[top_pos].get_port(), m_end_pos);
+								int[] end_pos = my_Objects[top_pos].get_port()[end_port];
+								
+								
+								Line_Object tmp[] = {
+										null,
+										new Asso_Line(start_pos, end_pos),
+										new Gen_Line(start_pos, end_pos),
+										new Com_Line(start_pos, end_pos)
+										};
+								my_Line_Objects[get_line_count()] = tmp[get_mode()];
+								my_Line_Objects[get_line_count()].set_obj_link(source_obj, source_port, top_pos, end_port);				
+								line_count += 1;
+							}
+						}
+					}
+					repaint();
 				}
 				
 				@Override
 				public void mousePressed(MouseEvent e) {
-					top = -1;
-					top_pos = -1;
-					// Select
-					if(get_mode() == 0) {
-						int current_x = e.getX();
-						int current_y = e.getY();
-						int count = 0;
-						obj_in_range =  new int[obj_count];
-						
-						for(int i = 0; i < obj_count; i++) {
-							if(my_Objects[i].is_in_range(current_x, current_y)) {
-								obj_in_range[count] = i;
-								count += 1;
-							}
-						}
-						for(int i = 0; i < count; i++) {
-							if(my_Objects[obj_in_range[i]].get_depth() > top) {
-								top = my_Objects[i].get_depth();
-								top_pos = obj_in_range[i];
-							}
-						}
-					}
+					pressed = true;
+					find_top(e.getX(), e.getY());
+					m_start_pos[0] = e.getX();
+					m_start_pos[1] = e.getY() - y;
 				}
 				
 				@Override
@@ -232,24 +322,24 @@ public class UML {
 				
 				@Override
 				public void mouseClicked(MouseEvent e) {
+					pressed = false;
 					// TODO Auto-generated method stub
 					if(get_mode() > 3) {
 						int new_x = e.getX();
 						int new_y = e.getY() - y;
 						Basic_Object []tmp = {
 								null, 
-								new Asso_Line(),
-								new Gen_Line(),
-								new Com_Line(),
+								null,
+								null,
+								null,
 								new Class_Object(),
 								new Use_Class_Object()
 								};
-						System.out.println(obj_count);
-						System.out.println("x= "+new_x+", y= "+new_y);
-						my_Objects[get_count()] = tmp[get_mode()];
-						my_Objects[get_count()].set_x(new_x);
-						my_Objects[get_count()].set_y(new_y);
-						my_Objects[get_count()].set_depth(get_top_depth());
+						my_Objects[get_obj_count()] = tmp[get_mode()];
+						my_Objects[get_obj_count()].set_x(new_x);
+						my_Objects[get_obj_count()].set_y(new_y);
+						my_Objects[get_obj_count()].set_port();
+						my_Objects[get_obj_count()].set_depth(get_top_depth());
 						obj_count += 1;
 						set_depth(get_top_depth()+1);
 						repaint();
@@ -267,13 +357,46 @@ public class UML {
 				g.setColor(Color.black);
 				my_Objects[i].draw(g);
 			}
+			for(int i = 0; i < line_count; i++) {
+				my_Line_Objects[i].draw(g);
+			}
 		}
 		
-		public int get_count() {
+		public void find_top(int m_x, int m_y) {
+			int current_x = m_x;
+			int current_y = m_y;
+			int count = 0;
+			top = -1;
+			top_pos = -1;
+			obj_in_range =  new int[obj_count];
+			
+			for(int i = 0; i < obj_count; i++) {
+				if(my_Objects[i].is_in_range(current_x, current_y)) {
+					obj_in_range[count] = i;
+					count += 1;
+				}
+			}
+			for(int i = 0; i < count; i++) {
+				if(my_Objects[obj_in_range[i]].get_depth() > top) {
+					top = my_Objects[i].get_depth();
+					top_pos = obj_in_range[i];
+				}
+			}
+		}
+		
+		public int get_obj_count() {
 			return this.obj_count;
 		}
-		private Basic_Object []my_Objects = new Basic_Object[100];
-		private int obj_count = 0;
+		public int get_line_count() {
+			return this.line_count;
+		}
+		private Basic_Object[] my_Objects = new Basic_Object[100];
+		private Line_Object[] my_Line_Objects = new Line_Object[100];
+		private int obj_count = 0, line_count = 0;
+		private int top, top_pos;
+		private int[] obj_in_range;
+		private int[] m_start_pos = new int[2];
+		private boolean pressed = false;
 	}
 	
 	
