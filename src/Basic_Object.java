@@ -28,10 +28,10 @@ public class Basic_Object {
 	public void set_port() {
 		int current_x = this.get_x(), current_y = this.get_y(), count = 0;
 		int[] pos = {
-				current_x+(int)(obj_width/2), current_y, 
-				current_x+obj_width, current_y+(int)(obj_height/2),
-				current_x+(int)(obj_width/2), current_y+obj_height,
-				current_x, current_y+(int)(obj_height/2)
+				current_x+(int)(obj_width/2)-2, current_y-5, 
+				current_x+obj_width, current_y+(int)(obj_height/2)-2,
+				current_x+(int)(obj_width/2)-2, current_y+obj_height,
+				current_x-5, current_y+(int)(obj_height/2)-2
 		};
 		for(int port_num = 0; port_num < 4; port_num++) {
 			port[port_num][0] = pos[count];
@@ -56,7 +56,7 @@ public class Basic_Object {
 		this.obj_height = n;
 	}
 	public void draw(Graphics g) {}
-	public boolean is_in_range(int x, int y) {
+	public boolean is_inside(int x, int y) {
 		if(
 				x >= this.x && x <= (this.x+this.obj_width) &&
 				y >= this.y && y <= (this.y+this.obj_height)
@@ -65,6 +65,27 @@ public class Basic_Object {
 		}
 		return false;
 	}
+	public boolean is_in_range(int[] start_pos, int[] end_pos) {
+		if(this.get_x() >= start_pos[0] && this.get_y() >= start_pos[1]) {
+			if(this.get_x()+this.obj_width <= end_pos[0] && this.get_y()+this.obj_height <= end_pos[1])
+				return true;
+		}
+		return false;
+	}
+	public void set_selected(boolean b) {
+		selected = b;
+	}
+	public boolean is_selected() {
+		return selected;
+	}
+	public void draw_name(Graphics g) {
+		g.drawString(this.name, this.get_x()+(int)(obj_width*0.25), this.get_y()+25);
+	}
+	public void set_name(String s) {
+		this.name = s;
+	}
+	private String name = "";
+	private boolean selected = false;
 	private int[][]port = new int[4][2];
 	private int depth, x, y, type, obj_width = 100, obj_height = 150;
 }

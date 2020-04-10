@@ -20,6 +20,14 @@ public class Line_Object {
 		return obj_link;
 	}
 	public void set_obj_link(int s, int p1, int d, int p2) {
+		int[] shift = {5, 0, 0, 5};
+		int[] start_point = this.get_start_end()[0];
+		int[] end_point = this.get_start_end()[1];
+		for(int i = 0; i < 2; i++) {
+			start_point[i] += shift[p1];
+			end_point[i] += shift[p2];
+		}
+		this.set_start_end(start_point, end_point);
 		obj_link[0][0] = s;
 		obj_link[0][1] = p1;
 		obj_link[1][0] = d;

@@ -9,6 +9,7 @@ import javax.swing.*;
 
 public class UML {
 
+	
 	private static int mode = -1, depth = 0;
 	public static void set_mode(int n) {
 		mode = n;
@@ -136,6 +137,72 @@ public class UML {
 		}
 	}
 	
+	public static class my_Menu_Item extends JMenuItem {
+		public my_Menu_Item(Canvas c, String s) {
+			// TODO Auto-generated constructor stub
+			super(s);
+		}
+	}
+
+	public static class change_name_menu extends my_Menu_Item{
+		public change_name_menu(Canvas c, String s) {
+			// TODO Auto-generated constructor stub
+			super(c, s);
+			addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					int[] selected_obj = new int[c.get_obj_count()];
+					int selected_count = 0;
+					for(int i = 0; i < c.get_obj_count(); i++) {
+						if(c.my_Objects[i].is_selected()) {
+							selected_obj[selected_count] = i;
+							selected_count += 1;
+						}
+					}
+					if(selected_count == 1) {
+						Toolkit tk = Toolkit.getDefaultToolkit();
+						int xSize = (int)(tk.getScreenSize().getWidth() * 0.2);
+						int ySize = (int)(tk.getScreenSize().getHeight() * 0.2);
+						JFrame set_name_JFrame = new JFrame("Set new name");
+						Container cp = set_name_JFrame.getContentPane();
+						cp.setLayout(null);
+						set_name_JFrame.setSize(xSize, ySize);
+						set_name_JFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						JTextField name_Field = new JTextField();
+						name_Field.setBounds((int)(xSize*0.1), (int)(ySize*0.2), (int)(xSize*0.8), (int)(ySize*0.2));
+						JButton okButton = new JButton("OK");
+						okButton.setBounds((int)(xSize*0.1), (int)(ySize*0.2)*2, (int)(xSize*0.4), (int)(ySize*0.2));
+						JButton cancelButton = new JButton("Cancel");
+						cancelButton.setBounds((int)(xSize*0.1)*5, (int)(ySize*0.2)*2, (int)(xSize*0.4), (int)(ySize*0.2));
+						cp.add(name_Field);
+						cp.add(okButton);
+						cp.add(cancelButton);
+						set_name_JFrame.setVisible(true);
+						cancelButton.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								// TODO Auto-generated method stub
+								set_name_JFrame.dispose();
+							}
+						});
+						okButton.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								// TODO Auto-generated method stub
+								c.my_Objects[selected_obj[0]].set_name(name_Field.getText());
+								c.repaint();
+								set_name_JFrame.dispose();
+							}
+						});
+					}
+				}
+			});
+		}
+	}
 	public static class Class_Object extends Basic_Object{
 		public Class_Object() {
 			this.set_type(4);
@@ -145,8 +212,11 @@ public class UML {
 			// TODO Auto-generated method stub
 			super.draw(g);
 			g.drawRect(this.get_x(), this.get_y(), this.get_width(), this.get_height());
-			for(int port_num = 0; port_num < 4; port_num++) {
-				g.drawRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+			this.draw_name(g);
+			if(this.is_selected()) {
+				for(int port_num = 0; port_num < 4; port_num++) {
+					g.fillRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+				}
 			}
 		}
 	}
@@ -162,8 +232,11 @@ public class UML {
 			// TODO Auto-generated method stub
 			super.draw(g);
 			g.drawOval(this.get_x(), this.get_y(), this.get_width(), this.get_height());
-			for(int port_num = 0; port_num < 4; port_num++) {
-			g.drawRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+			this.draw_name(g);
+			if(this.is_selected()) {
+				for(int port_num = 0; port_num < 4; port_num++) {
+					g.fillRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+				}
 			}
 		}
 	}
@@ -177,22 +250,21 @@ public class UML {
 		public void draw(Graphics g) {
 			// TODO Auto-generated method stub
 			super.draw(g);
+			int[] start_point = this.get_start_end()[0];
+			int[] end_point = this.get_start_end()[1];
 			int end_port = this.get_obj_link()[1][1];
-			int[] shift_point = this.find_unit(this.get_start_end()[0], this.get_start_end()[1]);
+			int[] shift_point = this.find_unit(start_point, end_point);
 			int[][] arrow_point = new int[2][2];
 			int[] angle = {-30, 30};
+			g.drawLine(
+					start_point[0], start_point[1], 
+					end_point[0], end_point[1]);
 			for(int i = 0; i < 2; i++) {
-				arrow_point[i] = rotate_shift(this.get_start_end()[1], shift_point, Math.toRadians(angle[i]));
+				arrow_point[i] = rotate_shift(end_point, shift_point, Math.toRadians(angle[i]));
+				g.drawLine(
+					arrow_point[i][0], arrow_point[i][1], 
+					end_point[0], end_point[1]);
 			}
-			g.drawLine(
-					this.get_start_end()[0][0], this.get_start_end()[0][1], 
-					this.get_start_end()[1][0], this.get_start_end()[1][1]);
-			g.drawLine(
-					arrow_point[0][0], arrow_point[0][1], 
-					this.get_start_end()[1][0], this.get_start_end()[1][1]);
-			g.drawLine(
-					arrow_point[1][0], arrow_point[1][1], 
-					this.get_start_end()[1][0], this.get_start_end()[1][1]);
 		}
 	}
 	
@@ -311,13 +383,36 @@ public class UML {
 							}
 						}
 					}
+					else {
+						if(get_mode() == 0) {
+							int[] obj_in_range = new int [get_obj_count()];
+							int in_range_count = 0;
+							int[] m_end_pos = {e.getX(), e.getY() - y};
+							for(int i = 0; i < get_obj_count(); i++) {
+								my_Objects[i].set_selected(false);
+								if(my_Objects[i].is_in_range(m_start_pos, m_end_pos)) {
+									obj_in_range[in_range_count] = i;
+									in_range_count += 1;
+								}
+							}
+							for(int i = 0; i < in_range_count; i++) {
+								my_Objects[obj_in_range[i]].set_selected(true);
+							}
+						}
+					}
 					repaint();
 				}
 				
 				@Override
 				public void mousePressed(MouseEvent e) {
 					pressed = true;
-					find_top(e.getX(), e.getY());
+					find_top(e.getX(), e.getY() - y);
+					if(get_obj_count() > 0) {
+						for(int i = 0; i < get_obj_count(); i++) {
+							my_Objects[i].set_selected(false);
+						}
+						if(top_pos != -1) my_Objects[top_pos].set_selected(true);
+					}
 					m_start_pos[0] = e.getX();
 					m_start_pos[1] = e.getY() - y;
 				}
@@ -385,7 +480,7 @@ public class UML {
 			obj_in_range =  new int[obj_count];
 			
 			for(int i = 0; i < obj_count; i++) {
-				if(my_Objects[i].is_in_range(current_x, current_y)) {
+				if(my_Objects[i].is_inside(current_x, current_y)) {
 					obj_in_range[count] = i;
 					count += 1;
 				}
@@ -397,15 +492,14 @@ public class UML {
 				}
 			}
 		}
-		
-		public int get_obj_count() {
-			return this.obj_count;
-		}
-		public int get_line_count() {
-			return this.line_count;
-		}
 		private Basic_Object[] my_Objects = new Basic_Object[100];
 		private Line_Object[] my_Line_Objects = new Line_Object[100];
+		public int get_obj_count() {
+			return obj_count;
+		}
+		public int get_line_count() {
+			return line_count;
+		}
 		private int obj_count = 0, line_count = 0;
 		private int top, top_pos;
 		private int[] obj_in_range;
@@ -419,6 +513,8 @@ public class UML {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		int xSize = (int)(tk.getScreenSize().getWidth() * 0.5);
 		int ySize = (int)(tk.getScreenSize().getHeight() * 0.7);
+		int button_height = (int)(xSize*0.1);
+		
 		JFrame window = new JFrame("UML Editor"); 
 		window.setSize(xSize, ySize);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -432,18 +528,22 @@ public class UML {
 		file.add(op);
 		file.add(sv);
 		
+		Canvas canvas = new Canvas(xSize, ySize, button_height, 0);
+		cp.add(canvas);
+		
 		JMenu edit = new JMenu("Edit");
-		JMenuItem one = new JMenuItem("1");
-		JMenuItem two = new JMenuItem("2");
-		edit.add(one);
-		edit.add(two);
+		JMenuItem group = new JMenuItem("Group");
+		JMenuItem ungroup = new JMenuItem("UnGroup");
+		JMenuItem change_name = new change_name_menu(canvas, "change object name");
+		
+		edit.add(group);
+		edit.add(ungroup);
+		edit.add(change_name);
 		
 		JMenuBar menu = new JMenuBar();
 		menu.add(file);
 		menu.add(edit);
 		window.setJMenuBar(menu);
-		
-		int button_height = (int)(xSize*0.1);
 		
 		my_button []buttons = {
 				new select_button(), 
@@ -460,9 +560,6 @@ public class UML {
 			global_bs[i].setBounds(0, button_height*i, button_height, button_height);
 			cp.add(global_bs[i]);
 		}
-		
-		Canvas canvas = new Canvas(xSize, ySize, button_height, 0);
-		cp.add(canvas);
 		
 		window.setVisible(true);
 	}
