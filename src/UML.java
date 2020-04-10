@@ -209,7 +209,7 @@ public class UML {
 			int[][] shift = {{0, 20, 0, -20}, {-20, 0, 20, 0}};
 			int[] angle = {180, 270, 0, 90};
 			int[][] triangle = {{10, -10, 0}, {20, 20, 0}};
-			int[][] output_triangle = this.rotate_triangle(triangle, Math.toRadians(angle[end_port]));
+			int[][] output_triangle = this.rotate_shape(triangle, Math.toRadians(angle[end_port]));
 			g.drawPolygon(output_triangle[0], output_triangle[1], 3);
 			g.drawLine(
 					this.get_start_end()[0][0], this.get_start_end()[0][1], 
@@ -221,6 +221,20 @@ public class UML {
 		public Com_Line(int[] start, int[]end) {
 			this.set_type(3);
 			this.set_start_end(start, end);
+		}
+		@Override
+		public void draw(Graphics g) {
+			// TODO Auto-generated method stub
+			super.draw(g);
+			int end_port = this.get_obj_link()[1][1];
+			int[][] shift = {{0, 20, 0, -20}, {-20, 0, 20, 0}};
+			int[] angle = {180, 270, 0, 90};
+			int[][] square = {{0, 10, 0, -10}, {0, 10, 20, 10}};
+			int[][] output_triangle = this.rotate_shape(square, Math.toRadians(angle[end_port]));
+			g.drawPolygon(output_triangle[0], output_triangle[1], 4);
+			g.drawLine(
+					this.get_start_end()[0][0], this.get_start_end()[0][1], 
+					this.get_start_end()[1][0]+shift[0][end_port], this.get_start_end()[1][1]+shift[1][end_port]);
 		}
 	}
 	

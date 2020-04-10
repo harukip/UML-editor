@@ -26,8 +26,8 @@ public class Line_Object {
 		obj_link[1][1] = p2;
 	}
 	
-	public int[][] rotate_triangle(int[][] input, double angle){
-		int[][] output = new int[2][3];
+	public int[][] rotate_shape(int[][] input, double angle){
+		int[][] output = new int[input.length][input[0].length];
 		for(int i=0; i<input[0].length; i++) {
 			output[0][i] = (int)(Math.cos(angle)*input[0][i] - Math.sin(angle)*input[1][i])+get_start_end()[1][0];
 			output[1][i] = (int)(Math.sin(angle)*input[0][i] + Math.cos(angle)*input[1][i])+get_start_end()[1][1];
