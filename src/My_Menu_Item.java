@@ -14,6 +14,43 @@ public  class My_Menu_Item extends JMenuItem {
 			// TODO Auto-generated constructor stub
 			super(s);
 		}
+		
+		public static class group extends My_Menu_Item {
+			public group(My_Canvas c, String s) {
+				// TODO Auto-generated constructor stub
+				super(c, s);
+				addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						System.out.println("Group");
+						Object[] indexs_for_group = c.get_obj_in_range();
+						c.set_groups(c.get_groups(), new Composite(indexs_for_group));
+						for(Composite g:c.get_groups()) {
+							g.print_element();
+						}
+					}
+				});
+			}
+		}
+		
+		public static class ungroup extends My_Menu_Item{
+			public ungroup(My_Canvas c, String s) {
+				// TODO Auto-generated constructor stub
+				super(c, s);
+				addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						System.out.println("UnGroup");
+						
+					}
+				});
+			}
+		}
+		
 		public static class change_name_menu extends My_Menu_Item{
 			public change_name_menu(My_Canvas c, String s) {
 				// TODO Auto-generated constructor stub

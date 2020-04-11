@@ -72,7 +72,7 @@ public class UML {
 		cp.add(canvas);
 		
 		JMenu edit = new JMenu("Edit");
-		JMenuItem group = new JMenuItem("Group");
+		JMenuItem group = new My_Menu_Item.group(canvas, "Group");
 		JMenuItem ungroup = new JMenuItem("UnGroup");
 		JMenuItem change_name = new My_Menu_Item.change_name_menu(canvas, "change object name");
 		
