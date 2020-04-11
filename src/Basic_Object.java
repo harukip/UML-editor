@@ -88,4 +88,42 @@ public class Basic_Object {
 	private boolean selected = false;
 	private int[][]port = new int[4][2];
 	private int depth, x, y, type, obj_width = 100, obj_height = 150;
+	
+	public static class Class_Object extends Basic_Object{
+		public Class_Object() {
+			this.set_type(4);
+		}
+		@Override
+		public void draw(Graphics g) {
+			// TODO Auto-generated method stub
+			super.draw(g);
+			g.drawRect(this.get_x(), this.get_y(), this.get_width(), this.get_height());
+			this.draw_name(g);
+			if(this.is_selected()) {
+				for(int port_num = 0; port_num < 4; port_num++) {
+					g.fillRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+				}
+			}
+		}
+	}
+	
+	public static class Use_Class_Object extends Basic_Object{
+		public Use_Class_Object() {
+			this.set_type(5);
+			this.set_width(100);
+			this.set_height(50);
+		}
+		@Override
+		public void draw(Graphics g) {
+			// TODO Auto-generated method stub
+			super.draw(g);
+			g.drawOval(this.get_x(), this.get_y(), this.get_width(), this.get_height());
+			this.draw_name(g);
+			if(this.is_selected()) {
+				for(int port_num = 0; port_num < 4; port_num++) {
+					g.fillRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+				}
+			}
+		}
+	}
 }

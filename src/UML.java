@@ -46,179 +46,6 @@ public class UML {
 	
 	private static global g = new global();
 	
-	public static class my_Menu_Item extends JMenuItem {
-		public my_Menu_Item(Canvas c, String s) {
-			// TODO Auto-generated constructor stub
-			super(s);
-		}
-	}
-
-	public static class change_name_menu extends my_Menu_Item{
-		public change_name_menu(Canvas c, String s) {
-			// TODO Auto-generated constructor stub
-			super(c, s);
-			addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					int[] selected_obj = new int[c.get_obj_count()];
-					int selected_count = 0;
-					for(int i = 0; i < c.get_obj_count(); i++) {
-						if(c.my_Objects[i].is_selected()) {
-							selected_obj[selected_count] = i;
-							selected_count += 1;
-						}
-					}
-					if(selected_count == 1) {
-						Toolkit tk = Toolkit.getDefaultToolkit();
-						int xSize = (int)(tk.getScreenSize().getWidth() * 0.2);
-						int ySize = (int)(tk.getScreenSize().getHeight() * 0.2);
-						JFrame set_name_JFrame = new JFrame("Set new name");
-						Container cp = set_name_JFrame.getContentPane();
-						cp.setLayout(null);
-						set_name_JFrame.setSize(xSize, ySize);
-						set_name_JFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-						JTextField name_Field = new JTextField();
-						name_Field.setBounds((int)(xSize*0.1), (int)(ySize*0.2), (int)(xSize*0.8), (int)(ySize*0.2));
-						JButton okButton = new JButton("OK");
-						okButton.setBounds((int)(xSize*0.1), (int)(ySize*0.2)*2, (int)(xSize*0.4), (int)(ySize*0.2));
-						JButton cancelButton = new JButton("Cancel");
-						cancelButton.setBounds((int)(xSize*0.1)*5, (int)(ySize*0.2)*2, (int)(xSize*0.4), (int)(ySize*0.2));
-						cp.add(name_Field);
-						cp.add(okButton);
-						cp.add(cancelButton);
-						set_name_JFrame.setVisible(true);
-						cancelButton.addActionListener(new ActionListener() {
-							
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								// TODO Auto-generated method stub
-								set_name_JFrame.dispose();
-							}
-						});
-						okButton.addActionListener(new ActionListener() {
-							
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								// TODO Auto-generated method stub
-								c.my_Objects[selected_obj[0]].set_name(name_Field.getText());
-								c.repaint();
-								set_name_JFrame.dispose();
-							}
-						});
-					}
-				}
-			});
-		}
-	}
-	public static class Class_Object extends Basic_Object{
-		public Class_Object() {
-			this.set_type(4);
-		}
-		@Override
-		public void draw(Graphics g) {
-			// TODO Auto-generated method stub
-			super.draw(g);
-			g.drawRect(this.get_x(), this.get_y(), this.get_width(), this.get_height());
-			this.draw_name(g);
-			if(this.is_selected()) {
-				for(int port_num = 0; port_num < 4; port_num++) {
-					g.fillRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
-				}
-			}
-		}
-	}
-	
-	public static class Use_Class_Object extends Basic_Object{
-		public Use_Class_Object() {
-			this.set_type(5);
-			this.set_width(100);
-			this.set_height(50);
-		}
-		@Override
-		public void draw(Graphics g) {
-			// TODO Auto-generated method stub
-			super.draw(g);
-			g.drawOval(this.get_x(), this.get_y(), this.get_width(), this.get_height());
-			this.draw_name(g);
-			if(this.is_selected()) {
-				for(int port_num = 0; port_num < 4; port_num++) {
-					g.fillRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
-				}
-			}
-		}
-	}
-	
-	public static class Asso_Line extends Line_Object{
-		public Asso_Line(int[] start, int[]end) {
-			this.set_type(1);
-			this.set_start_end(start, end);
-		}
-		@Override
-		public void draw(Graphics g) {
-			// TODO Auto-generated method stub
-			super.draw(g);
-			int[] start_point = this.get_start_end()[0];
-			int[] end_point = this.get_start_end()[1];
-			int end_port = this.get_obj_link()[1][1];
-			int[] shift_point = this.find_unit(start_point, end_point);
-			int[][] arrow_point = new int[2][2];
-			int[] angle = {-30, 30};
-			g.drawLine(
-					start_point[0], start_point[1], 
-					end_point[0], end_point[1]);
-			for(int i = 0; i < 2; i++) {
-				arrow_point[i] = rotate_shift(end_point, shift_point, Math.toRadians(angle[i]));
-				g.drawLine(
-					arrow_point[i][0], arrow_point[i][1], 
-					end_point[0], end_point[1]);
-			}
-		}
-	}
-	
-	public static class Gen_Line extends Line_Object{
-		public Gen_Line(int[] start, int[]end) {
-			this.set_type(2);
-			this.set_start_end(start, end);
-		}
-		@Override
-		public void draw(Graphics g) {
-			// TODO Auto-generated method stub
-			super.draw(g);
-			int end_port = this.get_obj_link()[1][1];
-			int[][] shift = {{0, 20, 0, -20}, {-20, 0, 20, 0}};
-			int[] angle = {180, 270, 0, 90};
-			int[][] triangle = {{10, -10, 0}, {20, 20, 0}};
-			int[][] output_triangle = this.rotate_shape(triangle, Math.toRadians(angle[end_port]));
-			g.drawPolygon(output_triangle[0], output_triangle[1], 3);
-			g.drawLine(
-					this.get_start_end()[0][0], this.get_start_end()[0][1], 
-					this.get_start_end()[1][0]+shift[0][end_port], this.get_start_end()[1][1]+shift[1][end_port]);
-		}
-	}
-	
-	public static class Com_Line extends Line_Object{
-		public Com_Line(int[] start, int[]end) {
-			this.set_type(3);
-			this.set_start_end(start, end);
-		}
-		@Override
-		public void draw(Graphics g) {
-			// TODO Auto-generated method stub
-			super.draw(g);
-			int end_port = this.get_obj_link()[1][1];
-			int[][] shift = {{0, 20, 0, -20}, {-20, 0, 20, 0}};
-			int[] angle = {180, 270, 0, 90};
-			int[][] square = {{0, 10, 0, -10}, {0, 10, 20, 10}};
-			int[][] output_triangle = this.rotate_shape(square, Math.toRadians(angle[end_port]));
-			g.drawPolygon(output_triangle[0], output_triangle[1], 4);
-			g.drawLine(
-					this.get_start_end()[0][0], this.get_start_end()[0][1], 
-					this.get_start_end()[1][0]+shift[0][end_port], this.get_start_end()[1][1]+shift[1][end_port]);
-		}
-	}
-	
 	public static class Canvas extends JPanel{
 		public Canvas(int xSize, int ySize, int x, int y) {
 			this.setBounds(x, y, (int)(xSize*0.9), ySize);
@@ -282,9 +109,8 @@ public class UML {
 								
 								Line_Object tmp[] = {
 										null,
-										new Asso_Line(start_pos, end_pos),
-										new Gen_Line(start_pos, end_pos),
-										new Com_Line(start_pos, end_pos)
+										new Line_Object.Asso_Line(start_pos, end_pos),
+										new Line_Object.Com_Line(start_pos, end_pos)
 										};
 								my_Line_Objects[get_line_count()] = tmp[g.get_mode()];
 								my_Line_Objects[get_line_count()].set_obj_link(source_obj, source_port, top_pos, end_port);				
@@ -350,8 +176,8 @@ public class UML {
 								null,
 								null,
 								null,
-								new Class_Object(),
-								new Use_Class_Object()
+								new Basic_Object.Class_Object(),
+								new Basic_Object.Use_Class_Object()
 								};
 						my_Objects[get_obj_count()] = tmp[g.get_mode()];
 						my_Objects[get_obj_count()].set_x(new_x);
@@ -401,6 +227,12 @@ public class UML {
 				}
 			}
 		}
+		public Basic_Object[] get_my_Objects() {
+			return my_Objects;
+		}
+		public Line_Object[] get_my_Line_Objects() {
+			return my_Line_Objects;
+		}
 		private Basic_Object[] my_Objects = new Basic_Object[100];
 		private Line_Object[] my_Line_Objects = new Line_Object[100];
 		public int get_obj_count() {
@@ -443,7 +275,7 @@ public class UML {
 		JMenu edit = new JMenu("Edit");
 		JMenuItem group = new JMenuItem("Group");
 		JMenuItem ungroup = new JMenuItem("UnGroup");
-		JMenuItem change_name = new change_name_menu(canvas, "change object name");
+		JMenuItem change_name = new My_Menu_Item.change_name_menu(canvas, "change object name");
 		
 		edit.add(group);
 		edit.add(ungroup);

@@ -65,4 +65,71 @@ public class Line_Object {
 	private int[][]start_end = new int[2][2];
 	private int type;
 	private int[][] obj_link = new int[2][2]; // source/dest obj num, obj port num
+	
+	public static class Asso_Line extends Line_Object{
+		public Asso_Line(int[] start, int[]end) {
+			this.set_type(1);
+			this.set_start_end(start, end);
+		}
+		@Override
+		public void draw(Graphics g) {
+			// TODO Auto-generated method stub
+			super.draw(g);
+			int[] start_point = this.get_start_end()[0];
+			int[] end_point = this.get_start_end()[1];
+			int end_port = this.get_obj_link()[1][1];
+			int[] shift_point = this.find_unit(start_point, end_point);
+			int[][] arrow_point = new int[2][2];
+			int[] angle = {-30, 30};
+			g.drawLine(
+					start_point[0], start_point[1], 
+					end_point[0], end_point[1]);
+			for(int i = 0; i < 2; i++) {
+				arrow_point[i] = rotate_shift(end_point, shift_point, Math.toRadians(angle[i]));
+				g.drawLine(
+					arrow_point[i][0], arrow_point[i][1], 
+					end_point[0], end_point[1]);
+			}
+		}
+	}
+	public static class Gen_Line extends Line_Object{
+		public Gen_Line(int[] start, int[]end) {
+			this.set_type(2);
+			this.set_start_end(start, end);
+		}
+		@Override
+		public void draw(Graphics g) {
+			// TODO Auto-generated method stub
+			super.draw(g);
+			int end_port = this.get_obj_link()[1][1];
+			int[][] shift = {{0, 20, 0, -20}, {-20, 0, 20, 0}};
+			int[] angle = {180, 270, 0, 90};
+			int[][] triangle = {{10, -10, 0}, {20, 20, 0}};
+			int[][] output_triangle = this.rotate_shape(triangle, Math.toRadians(angle[end_port]));
+			g.drawPolygon(output_triangle[0], output_triangle[1], 3);
+			g.drawLine(
+					this.get_start_end()[0][0], this.get_start_end()[0][1], 
+					this.get_start_end()[1][0]+shift[0][end_port], this.get_start_end()[1][1]+shift[1][end_port]);
+		}
+	}
+	public static class Com_Line extends Line_Object{
+		public Com_Line(int[] start, int[]end) {
+			this.set_type(3);
+			this.set_start_end(start, end);
+		}
+		@Override
+		public void draw(Graphics g) {
+			// TODO Auto-generated method stub
+			super.draw(g);
+			int end_port = this.get_obj_link()[1][1];
+			int[][] shift = {{0, 20, 0, -20}, {-20, 0, 20, 0}};
+			int[] angle = {180, 270, 0, 90};
+			int[][] square = {{0, 10, 0, -10}, {0, 10, 20, 10}};
+			int[][] output_triangle = this.rotate_shape(square, Math.toRadians(angle[end_port]));
+			g.drawPolygon(output_triangle[0], output_triangle[1], 4);
+			g.drawLine(
+					this.get_start_end()[0][0], this.get_start_end()[0][1], 
+					this.get_start_end()[1][0]+shift[0][end_port], this.get_start_end()[1][1]+shift[1][end_port]);
+		}
+	}
 }
