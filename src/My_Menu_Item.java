@@ -10,12 +10,12 @@ import javax.swing.JTextField;
 
 
 public  class My_Menu_Item extends JMenuItem {
-		public My_Menu_Item(UML.Canvas c, String s) {
+		public My_Menu_Item(My_Canvas c, String s) {
 			// TODO Auto-generated constructor stub
 			super(s);
 		}
 		public static class change_name_menu extends My_Menu_Item{
-			public change_name_menu(UML.Canvas c, String s) {
+			public change_name_menu(My_Canvas c, String s) {
 				// TODO Auto-generated constructor stub
 				super(c, s);
 				addActionListener(new ActionListener() {
