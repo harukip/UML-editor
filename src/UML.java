@@ -8,134 +8,43 @@ import javax.swing.*;
 
 
 public class UML {
-
-	
-	private static int mode = -1, depth = 0;
-	public static void set_mode(int n) {
-		mode = n;
-	}
-	public static int get_mode() {
-		return mode;
-	}
-	public static void set_depth(int n) {
-		depth = n;
-	}
-	public static int get_top_depth() {
-		return depth;
-	}
-	public static int nearest_port(int[][] port, int[] pos) {
-		int min = 9999, nearest = -1;
-		for(int port_num = 0; port_num < 4; port_num++) {
-			int tmp = (int)(Math.sqrt((Math.pow((port[port_num][0] - pos[0]), 2) + Math.pow((port[port_num][1] - pos[1]), 2))));
-			if(tmp < min) {
-				nearest = port_num;
-				min = tmp;
-			}
+	public static class global{
+		private  int mode = -1, depth = 0;
+		public My_Button[] global_bs;
+		public void set_mode(int n) {
+			mode = n;
 		}
-		return nearest;
-	}
-	public static my_button[] global_bs;
-	public static void flush_icon(my_button[] bs) {
-		for(my_button b : bs) {
-			if (b.get_num() != mode) {
-				b.set_ispressed(0);
-				b.show_icon();
-			}
+		public int get_mode() {
+			return mode;
 		}
-	}
-	
-	public static class my_button extends JButton {
-		public my_button() {
-			this.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					change_icon();
-					show_icon();
-					if(get_ispressed() == 1) set_mode(get_num());
-					else set_mode(-1);
-					flush_icon(global_bs);
+		public void set_depth(int n) {
+			depth = n;
+		}
+		public int get_top_depth() {
+			return depth;
+		}
+		public int nearest_port(int[][] port, int[] pos) {
+			int min = 9999, nearest = -1;
+			for(int port_num = 0; port_num < 4; port_num++) {
+				int tmp = (int)(Math.sqrt((Math.pow((port[port_num][0] - pos[0]), 2) + Math.pow((port[port_num][1] - pos[1]), 2))));
+				if(tmp < min) {
+					nearest = port_num;
+					min = tmp;
 				}
-			});
+			}
+			return nearest;
 		}
-		
-		public void change_icon() {
-			ispressed = (ispressed + 1)%2;
-		}
-		
-		public void show_icon() {
-			this.setIcon(icons[ispressed]);
-		}
-
-		public void set_num(int n) {
-			this.num = n;
-		}
-		public void set_ispressed(int n) {
-			this.ispressed = n;
-		}
-		public int get_num() {
-			return this.num;
-		}
-		public int get_ispressed() {
-			return ispressed;
-		}
-		public ImageIcon []icons = {new ImageIcon(), new ImageIcon()};
-		private int ispressed = -1;
-		private int num = -1;
-	}
-	
-	public static class select_button extends my_button {
-		public select_button() {
-			ImageIcon []tmpIcons = {new ImageIcon("./img/select_icon.png"), new ImageIcon("./img/select_icon_pressed.png")};
-			this.icons = tmpIcons;
-			this.change_icon();
-			this.show_icon();
+		public void flush_icon(My_Button[] bs) {
+			for(My_Button b : bs) {
+				if (b.get_num() != g.mode) {
+					b.set_ispressed(0);
+					b.show_icon();
+				}
+			}
 		}
 	}
 	
-	public static class asso_button extends my_button {
-		public asso_button() {
-			ImageIcon []tmpIcons = {new ImageIcon("./img/asso_icon.png"), new ImageIcon("./img/asso_icon_pressed.png")};
-			this.icons = tmpIcons;
-			this.change_icon();
-			this.show_icon();
-		}
-	}
-	
-	public static class gen_button extends my_button {
-		public gen_button() {
-			ImageIcon []tmpIcons = {new ImageIcon("./img/gen_icon.png"), new ImageIcon("./img/gen_icon_pressed.png")};
-			this.icons = tmpIcons;
-			this.change_icon();
-			this.show_icon();
-		}
-	}
-	
-	public static class com_button extends my_button {
-		public com_button() {
-			ImageIcon []tmpIcons = {new ImageIcon("./img/com_icon.png"), new ImageIcon("./img/com_icon_pressed.png")};
-			this.icons = tmpIcons;
-			this.change_icon();
-			this.show_icon();
-		}
-	}
-
-	public static class class_button extends my_button {
-		public class_button() {
-			ImageIcon []tmpIcons = {new ImageIcon("./img/class_icon.png"), new ImageIcon("./img/class_icon_pressed.png")};
-			this.icons = tmpIcons;
-			this.change_icon();
-			this.show_icon();
-		}
-	}
-
-	public static class use_class_button extends my_button {
-		public use_class_button() {
-			ImageIcon []tmpIcons = {new ImageIcon("./img/use_class_icon.png"), new ImageIcon("./img/use_class_icon_pressed.png")};
-			this.icons = tmpIcons;
-			this.change_icon();
-			this.show_icon();
-		}
-	}
+	private static global g = new global();
 	
 	public static class my_Menu_Item extends JMenuItem {
 		public my_Menu_Item(Canvas c, String s) {
@@ -321,11 +230,11 @@ public class UML {
 				public void mouseReleased(MouseEvent e) {
 					boolean is_line = false;
 					for(int i:line_mode) {
-						if(i == get_mode()) is_line = true;
+						if(i == g.get_mode()) is_line = true;
 					}
 					// Select
 					if(top != -1) {
-						if(get_mode() == 0) {
+						if(g.get_mode() == 0) {
 							int diff_x = m_start_pos[0] - my_Objects[top_pos].get_x();
 							int diff_y = m_start_pos[1] - my_Objects[top_pos].get_y();
 							my_Objects[top_pos].set_x(e.getX() - diff_x);
@@ -364,10 +273,10 @@ public class UML {
 							find_top(e.getX(), e.getY() - y);
 							if(top != -1 && source_obj != top_pos) {
 								
-								int source_port = nearest_port(my_Objects[source_obj].get_port(), m_start_pos);
+								int source_port = g.nearest_port(my_Objects[source_obj].get_port(), m_start_pos);
 								int[] start_pos = my_Objects[source_obj].get_port()[source_port];
 								int[] m_end_pos = {e.getX(), e.getY() - y}; // mouse end pos
-								int end_port = nearest_port(my_Objects[top_pos].get_port(), m_end_pos);
+								int end_port = g.nearest_port(my_Objects[top_pos].get_port(), m_end_pos);
 								int[] end_pos = my_Objects[top_pos].get_port()[end_port];
 								
 								
@@ -377,14 +286,14 @@ public class UML {
 										new Gen_Line(start_pos, end_pos),
 										new Com_Line(start_pos, end_pos)
 										};
-								my_Line_Objects[get_line_count()] = tmp[get_mode()];
+								my_Line_Objects[get_line_count()] = tmp[g.get_mode()];
 								my_Line_Objects[get_line_count()].set_obj_link(source_obj, source_port, top_pos, end_port);				
 								line_count += 1;
 							}
 						}
 					}
 					else {
-						if(get_mode() == 0) {
+						if(g.get_mode() == 0) {
 							int[] obj_in_range = new int [get_obj_count()];
 							int in_range_count = 0;
 							int[] m_end_pos = {e.getX(), e.getY() - y};
@@ -433,7 +342,7 @@ public class UML {
 				public void mouseClicked(MouseEvent e) {
 					pressed = false;
 					// TODO Auto-generated method stub
-					if(get_mode() > 3) {
+					if(g.get_mode() > 3) {
 						int new_x = e.getX();
 						int new_y = e.getY() - y;
 						Basic_Object []tmp = {
@@ -444,13 +353,13 @@ public class UML {
 								new Class_Object(),
 								new Use_Class_Object()
 								};
-						my_Objects[get_obj_count()] = tmp[get_mode()];
+						my_Objects[get_obj_count()] = tmp[g.get_mode()];
 						my_Objects[get_obj_count()].set_x(new_x);
 						my_Objects[get_obj_count()].set_y(new_y);
 						my_Objects[get_obj_count()].set_port();
-						my_Objects[get_obj_count()].set_depth(get_top_depth());
+						my_Objects[get_obj_count()].set_depth(g.get_top_depth());
 						obj_count += 1;
-						set_depth(get_top_depth()+1);
+						g.set_depth(g.get_top_depth()+1);
 						repaint();
 					}
 				}
@@ -545,20 +454,21 @@ public class UML {
 		menu.add(edit);
 		window.setJMenuBar(menu);
 		
-		my_button []buttons = {
-				new select_button(), 
-				new asso_button(), 
-				new gen_button(), 
-				new com_button(), 
-				new class_button(), 
-				new use_class_button()
+		My_Button []buttons = {
+				new My_Button.select_button(g), 
+				new My_Button.asso_button(g), 
+				new My_Button.gen_button(g), 
+				new My_Button.com_button(g), 
+				new My_Button.class_button(g), 
+				new My_Button.use_class_button(g)
 		};
-		global_bs = buttons;
 		
-		for(int i = 0; i < global_bs.length; i++) {
-			global_bs[i].set_num(i);
-			global_bs[i].setBounds(0, button_height*i, button_height, button_height);
-			cp.add(global_bs[i]);
+		g.global_bs = buttons;
+		
+		for(int i = 0; i < g.global_bs.length; i++) {
+			g.global_bs[i].set_num(i);
+			g.global_bs[i].setBounds(0, button_height*i, button_height, button_height);
+			cp.add(g.global_bs[i]);
 		}
 		
 		window.setVisible(true);
