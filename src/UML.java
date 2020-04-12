@@ -73,7 +73,7 @@ public class UML {
 		
 		JMenu edit = new JMenu("Edit");
 		JMenuItem group = new My_Menu_Item.group(canvas, "Group");
-		JMenuItem ungroup = new JMenuItem("UnGroup");
+		JMenuItem ungroup = new My_Menu_Item.ungroup(canvas, "UnGroup");
 		JMenuItem change_name = new My_Menu_Item.change_name_menu(canvas, "change object name");
 		
 		edit.add(group);

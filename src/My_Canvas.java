@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -67,18 +68,18 @@ public class My_Canvas extends JPanel{
 				}
 				else {
 					if(UML.get_g().get_mode() == 0) {
-						obj_in_range = new int [get_obj_count()];
+						obj_in_range = new ArrayList<Integer>();
 						int in_range_count = 0;
 						int[] m_end_pos = {e.getX(), e.getY() - y};
 						for(int i = 0; i < get_obj_count(); i++) {
 							my_Objects[i].set_selected(false);
 							if(my_Objects[i].is_in_range(m_pressed_pos, m_end_pos) || my_Objects[i].is_in_range(m_end_pos, m_pressed_pos)) {
-								obj_in_range[in_range_count] = i;
+								obj_in_range.add((int)i);
 								in_range_count += 1;
 							}
 						}
 						for(int i = 0; i < in_range_count; i++) {
-							int pos = obj_in_range[i];
+							int pos = obj_in_range.get(i);
 							int group_num = check_group(pos);
 							if(group_num != -1) {
 								for(Object obj_pos:groups[group_num].getList()) {
@@ -86,7 +87,7 @@ public class My_Canvas extends JPanel{
 								}
 							}
 							else
-								my_Objects[obj_in_range[i]].set_selected(true);
+								my_Objects[obj_in_range.get(i)].set_selected(true);
 						}
 					}
 				}
@@ -197,18 +198,18 @@ public class My_Canvas extends JPanel{
 		int count = 0;
 		top = -1;
 		top_pos = -1;
-		obj_in_range =  new int[obj_count];
+		obj_in_range =  new ArrayList<Integer>();
 		
 		for(int i = 0; i < obj_count; i++) {
 			if(my_Objects[i].is_inside(current_x, current_y)) {
-				obj_in_range[count] = i;
+				obj_in_range.add((int)i);
 				count += 1;
 			}
 		}
 		for(int i = 0; i < count; i++) {
-			if(my_Objects[obj_in_range[i]].get_depth() > top) {
+			if(my_Objects[obj_in_range.get(i)].get_depth() > top) {
 				top = my_Objects[i].get_depth();
-				top_pos = obj_in_range[i];
+				top_pos = obj_in_range.get(i);
 			}
 		}
 	}
@@ -226,39 +227,36 @@ public class My_Canvas extends JPanel{
 	public int get_line_count() {
 		return line_count;
 	}
-	public Object[] get_obj_in_range() {
-		Object[] output = new Object[obj_in_range.length];
-		for(int i = 0; i < obj_in_range.length; i++) {
-			output[i] = (Object)(obj_in_range[i]);
+	public Integer[] get_obj_in_range() {
+		Integer[] output = new Integer[obj_in_range.size()];
+		for(int i = 0; i < obj_in_range.size(); i++) {
+			output[i] = (Integer)(obj_in_range.get(i));
 		}
 		return output;
 	}
-	public Composite[] get_groups() {
-		return groups;
-	}
-	public void set_groups(Composite[] origin_groups, Composite new_one) {
-		Composite[] new_groups;
-		if (origin_groups == null) {
-			new_groups = new Composite[1];
-		}
-		else{
-			new_groups = new Composite[origin_groups.length+1];
-			for(int i = 0; i < origin_groups.length; i++) {
-				new_groups[i] = origin_groups[i];
-			}
-		}
-		new_groups[new_groups.length-1] = new_one;
-		groups = new_groups;
-	}
 	public int check_group(int pos) {
-		if (groups == null) return -1;
-		for(int group_num = 0; group_num < groups.length; group_num++) {
-			List<Object> list = groups[group_num].getList();
-			if(list.contains((Object) pos)) {
-				return group_num;
+		boolean have_group = false;
+		for(int i:group_usage) {
+			if(i == 1) {
+				have_group = true;
+				break;
 			}
 		}
-		return -1;
+		if (!have_group) {
+			return -1;
+		}
+		int max_group = -1, max_group_len = -1;
+		for(int group_pos = 0; group_pos < GROUP_NUM; group_pos++) {
+			if(group_usage[group_pos]==0) continue;
+			List<Integer> list = groups[group_pos].getList();
+			if(list.contains((Object) pos)) {
+				if(list.size() > max_group_len) {
+					max_group_len = list.size();
+					max_group = group_pos;
+				}
+			}
+		}
+		return max_group;
 	}
 	public void set_new_pos(MouseEvent e, int obj_pos) {
 		int diff_x = m_start_pos[0] - my_Objects[obj_pos].get_x();
@@ -293,11 +291,29 @@ public class My_Canvas extends JPanel{
 			}
 		}
 	}
+
+	public Composite[] get_groups() {
+		return groups;
+	}
+	public void set_groups(int idx, Composite g) {
+		groups[idx] = g;
+	}
+	public int[] get_group_usage() {
+		return group_usage;
+	}
+	public void set_group_usage(int idx, int val) {
+		group_usage[idx] = val;
+	}
+	public int get_GROUP_NUM() {
+		return GROUP_NUM;
+	}
 	private int obj_count = 0, line_count = 0, x, y;
+	private int GROUP_NUM = 100;
 	private int top, top_pos;
-	private int[] obj_in_range;
+	private List<Integer> obj_in_range;
 	private int[] m_start_pos = new int[2];
 	private int[] m_pressed_pos = new int[2];
 	private boolean pressed = false;
-	private Composite[] groups;
+	private int[] group_usage = new int[GROUP_NUM];
+	private Composite[] groups = new Composite[GROUP_NUM];
 }

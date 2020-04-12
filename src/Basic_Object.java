@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 
 public class Basic_Object {
@@ -97,7 +98,11 @@ public class Basic_Object {
 		public void draw(Graphics g) {
 			// TODO Auto-generated method stub
 			super.draw(g);
+			g.setColor(Color.white);
+			g.fillRect(this.get_x(), this.get_y(), this.get_width(), this.get_height());
+			g.setColor(Color.black);
 			g.drawRect(this.get_x(), this.get_y(), this.get_width(), this.get_height());
+			g.drawRect(this.get_x(), this.get_y()+(int)(this.get_height()*0.33), this.get_width(), (int)(this.get_height()*0.33));
 			this.draw_name(g);
 			if(this.is_selected()) {
 				for(int port_num = 0; port_num < 4; port_num++) {
@@ -117,6 +122,9 @@ public class Basic_Object {
 		public void draw(Graphics g) {
 			// TODO Auto-generated method stub
 			super.draw(g);
+			g.setColor(Color.white);
+			g.fillOval(this.get_x(), this.get_y(), this.get_width(), this.get_height());
+			g.setColor(Color.black);
 			g.drawOval(this.get_x(), this.get_y(), this.get_width(), this.get_height());
 			this.draw_name(g);
 			if(this.is_selected()) {
