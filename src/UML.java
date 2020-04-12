@@ -63,10 +63,10 @@ public class UML {
 		cp.setLayout(null);
 		
 		JMenu file = new JMenu("File");
-		JMenuItem op = new JMenuItem("Open file");
+		/*JMenuItem op = new JMenuItem("Open file");
 		JMenuItem sv = new JMenuItem("Save file");
 		file.add(op);
-		file.add(sv);
+		file.add(sv);*/
 		
 		My_Canvas canvas = new My_Canvas(xSize, ySize, button_height, 0);
 		cp.add(canvas);

@@ -46,8 +46,7 @@ public class My_Canvas extends JPanel{
 						int source_obj = top_pos;
 						find_top(e.getX(), e.getY() - y);
 						if(top != -1 && source_obj != top_pos) {
-							
-							int source_port = UML.get_g().nearest_port(my_Objects[source_obj].get_port(), m_start_pos);
+							int source_port = UML.get_g().nearest_port(my_Objects[source_obj].get_port(), m_pressed_pos);
 							int[] start_pos = my_Objects[source_obj].get_port()[source_port];
 							int[] m_end_pos = {e.getX(), e.getY() - y}; // mouse end pos
 							int end_port = UML.get_g().nearest_port(my_Objects[top_pos].get_port(), m_end_pos);
@@ -98,7 +97,7 @@ public class My_Canvas extends JPanel{
 			public void mousePressed(MouseEvent e) {
 				pressed = true;
 				find_top(e.getX(), e.getY() - y);
-				if(get_obj_count() > 0) {
+				if(get_obj_count() > 0 && UML.get_g().get_mode() == 0) {
 					for(int i = 0; i < get_obj_count(); i++) {
 						my_Objects[i].set_selected(false);
 					}

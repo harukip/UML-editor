@@ -20,13 +20,8 @@ public class Line_Object {
 		return obj_link;
 	}
 	public void set_obj_link(int s, int p1, int d, int p2) {
-		int[] shift = {5, 0, 0, 5};
 		int[] start_point = this.get_start_end()[0];
 		int[] end_point = this.get_start_end()[1];
-		for(int i = 0; i < 2; i++) {
-			start_point[i] += shift[p1];
-			end_point[i] += shift[p2];
-		}
 		this.set_start_end(start_point, end_point);
 		obj_link[0][0] = s;
 		obj_link[0][1] = p1;
@@ -77,7 +72,6 @@ public class Line_Object {
 			super.draw(g);
 			int[] start_point = this.get_start_end()[0];
 			int[] end_point = this.get_start_end()[1];
-			int end_port = this.get_obj_link()[1][1];
 			int[] shift_point = this.find_unit(start_point, end_point);
 			int[][] arrow_point = new int[2][2];
 			int[] angle = {-30, 30};

@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
+
 public class Basic_Object {
 	public void set_depth(int n) {
 		this.depth = n;
@@ -29,10 +30,10 @@ public class Basic_Object {
 	public void set_port() {
 		int current_x = this.get_x(), current_y = this.get_y(), count = 0;
 		int[] pos = {
-				current_x+(int)(obj_width/2)-2, current_y-5, 
+				current_x+(int)(obj_width/2)-2, current_y, 
 				current_x+obj_width, current_y+(int)(obj_height/2)-2,
 				current_x+(int)(obj_width/2)-2, current_y+obj_height,
-				current_x-5, current_y+(int)(obj_height/2)-2
+				current_x, current_y+(int)(obj_height/2)-2
 		};
 		for(int port_num = 0; port_num < 4; port_num++) {
 			port[port_num][0] = pos[count];
@@ -97,6 +98,7 @@ public class Basic_Object {
 		@Override
 		public void draw(Graphics g) {
 			// TODO Auto-generated method stub
+			
 			super.draw(g);
 			g.setColor(Color.white);
 			g.fillRect(this.get_x(), this.get_y(), this.get_width(), this.get_height());

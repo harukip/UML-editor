@@ -26,7 +26,6 @@ public  class My_Menu_Item extends JMenuItem {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
-						System.out.println("Group");
 						int[] usage = c.get_group_usage();
 						Composite[] group_list = c.get_groups();
 						Integer[] indexs_for_group = c.get_obj_in_range();
@@ -48,7 +47,6 @@ public  class My_Menu_Item extends JMenuItem {
 								}
 							}
 							if(!found) {
-								System.out.println("alone obj: "+obj_id);
 								alone_obj.add(obj_id);
 							}
 							else {
@@ -79,7 +77,6 @@ public  class My_Menu_Item extends JMenuItem {
 						Composite group_obj = new Composite(new_list, empty_idx);
 						c.set_groups(empty_idx, group_obj);
 						c.set_group_usage(empty_idx, 1);
-						group_obj.print_element();
 					}
 				});
 			}
@@ -94,7 +91,6 @@ public  class My_Menu_Item extends JMenuItem {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
-						System.out.println("UnGroup");
 						int[] usage = c.get_group_usage();
 						Composite[] group_list = c.get_groups();
 						Integer[] indexs_for_group = c.get_obj_in_range();
