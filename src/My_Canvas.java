@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.util.List;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
@@ -13,8 +14,24 @@ public class My_Canvas extends JPanel{
 		this.x = x;
 		this.y = y;
 		
+		this.addMouseMotionListener(new MouseMotionListener() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				// TODO Auto-generated method stub
+				move_obj(e);
+				repaint();
+			}
+		});
+		
 		this.addMouseListener(new MouseListener() {
 			int [] line_mode = {1, 2, 3};
+			
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				boolean is_line = false;
@@ -23,39 +40,28 @@ public class My_Canvas extends JPanel{
 				}
 				// Select
 				if(top != -1) {
-					int group_num = check_group(top_pos);
-					if(group_num != -1 && UML.get_g().get_mode() == 0) {
-						for(Object obj_pos:groups[group_num].getList()) {
-							move(e, (int)obj_pos);
-						}
-					}
-					else {
-						if(UML.get_g().get_mode() == 0) {
-							move(e, top_pos);
-						}
-						if(is_line && pressed) {
-							pressed = false;
-							int source_obj = top_pos;
-							find_top(e.getX(), e.getY() - y);
-							if(top != -1 && source_obj != top_pos) {
-								
-								int source_port = UML.get_g().nearest_port(my_Objects[source_obj].get_port(), m_start_pos);
-								int[] start_pos = my_Objects[source_obj].get_port()[source_port];
-								int[] m_end_pos = {e.getX(), e.getY() - y}; // mouse end pos
-								int end_port = UML.get_g().nearest_port(my_Objects[top_pos].get_port(), m_end_pos);
-								int[] end_pos = my_Objects[top_pos].get_port()[end_port];
-								
-								
-								Line_Object tmp[] = {
-										null,
-										new Line_Object.Asso_Line(start_pos, end_pos),
-										new Line_Object.Gen_Line(start_pos, end_pos),
-										new Line_Object.Com_Line(start_pos, end_pos)
-										};
-								my_Line_Objects[get_line_count()] = tmp[UML.get_g().get_mode()];
-								my_Line_Objects[get_line_count()].set_obj_link(source_obj, source_port, top_pos, end_port);				
-								line_count += 1;
-							}
+					if(is_line && pressed) {
+						pressed = false;
+						int source_obj = top_pos;
+						find_top(e.getX(), e.getY() - y);
+						if(top != -1 && source_obj != top_pos) {
+							
+							int source_port = UML.get_g().nearest_port(my_Objects[source_obj].get_port(), m_start_pos);
+							int[] start_pos = my_Objects[source_obj].get_port()[source_port];
+							int[] m_end_pos = {e.getX(), e.getY() - y}; // mouse end pos
+							int end_port = UML.get_g().nearest_port(my_Objects[top_pos].get_port(), m_end_pos);
+							int[] end_pos = my_Objects[top_pos].get_port()[end_port];
+							
+							
+							Line_Object tmp[] = {
+									null,
+									new Line_Object.Asso_Line(start_pos, end_pos),
+									new Line_Object.Gen_Line(start_pos, end_pos),
+									new Line_Object.Com_Line(start_pos, end_pos)
+									};
+							my_Line_Objects[get_line_count()] = tmp[UML.get_g().get_mode()];
+							my_Line_Objects[get_line_count()].set_obj_link(source_obj, source_port, top_pos, end_port);				
+							line_count += 1;
 						}
 					}
 				}
@@ -66,7 +72,7 @@ public class My_Canvas extends JPanel{
 						int[] m_end_pos = {e.getX(), e.getY() - y};
 						for(int i = 0; i < get_obj_count(); i++) {
 							my_Objects[i].set_selected(false);
-							if(my_Objects[i].is_in_range(m_start_pos, m_end_pos) || my_Objects[i].is_in_range(m_end_pos, m_start_pos)) {
+							if(my_Objects[i].is_in_range(m_pressed_pos, m_end_pos) || my_Objects[i].is_in_range(m_end_pos, m_pressed_pos)) {
 								obj_in_range[in_range_count] = i;
 								in_range_count += 1;
 							}
@@ -106,8 +112,11 @@ public class My_Canvas extends JPanel{
 							my_Objects[top_pos].set_selected(true);
 					}
 				}
+
 				m_start_pos[0] = e.getX();
 				m_start_pos[1] = e.getY() - y;
+				m_pressed_pos[0] = e.getX();
+				m_pressed_pos[1] = e.getY() - y;
 			}
 			
 			@Override
@@ -162,6 +171,24 @@ public class My_Canvas extends JPanel{
 		for(int i = 0; i < line_count; i++) {
 			my_Line_Objects[i].draw(g);
 		}
+	}
+	
+	public void move_obj(MouseEvent e) {
+		if(top != -1) {
+			int group_num = check_group(top_pos);
+			if(group_num != -1 && UML.get_g().get_mode() == 0) {
+				for(Object obj_pos:groups[group_num].getList()) {
+					set_new_pos(e, (int)obj_pos);
+				}
+			}
+			else {
+				if(UML.get_g().get_mode() == 0) {
+					set_new_pos(e, top_pos);
+				}
+			}
+		}
+		m_start_pos[0] = e.getX();
+		m_start_pos[1] = e.getY()-y;
 	}
 	
 	public void find_top(int m_x, int m_y) {
@@ -233,7 +260,7 @@ public class My_Canvas extends JPanel{
 		}
 		return -1;
 	}
-	public void move(MouseEvent e, int obj_pos) {
+	public void set_new_pos(MouseEvent e, int obj_pos) {
 		int diff_x = m_start_pos[0] - my_Objects[obj_pos].get_x();
 		int diff_y = m_start_pos[1] - my_Objects[obj_pos].get_y();
 		my_Objects[obj_pos].set_x(e.getX() - diff_x);
@@ -270,6 +297,7 @@ public class My_Canvas extends JPanel{
 	private int top, top_pos;
 	private int[] obj_in_range;
 	private int[] m_start_pos = new int[2];
+	private int[] m_pressed_pos = new int[2];
 	private boolean pressed = false;
 	private Composite[] groups;
 }
