@@ -107,8 +107,10 @@ public class Basic_Object {
 			g.drawRect(this.get_x(), this.get_y()+(int)(this.get_height()*0.33), this.get_width(), (int)(this.get_height()*0.33));
 			this.draw_name(g);
 			if(this.is_selected()) {
+				int[] shift_x = {0, 0, 0, -5};
+				int[] shift_y = {-5, 0, 0, 0};
 				for(int port_num = 0; port_num < 4; port_num++) {
-					g.fillRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+					g.fillRect(this.get_port()[port_num][0]+shift_x[port_num], this.get_port()[port_num][1]+shift_y[port_num], 5, 5);
 				}
 			}
 		}
@@ -130,8 +132,10 @@ public class Basic_Object {
 			g.drawOval(this.get_x(), this.get_y(), this.get_width(), this.get_height());
 			this.draw_name(g);
 			if(this.is_selected()) {
+				int[] shift_x = {0, 0, 0, -5};
+				int[] shift_y = {-5, 0, 0, 0};
 				for(int port_num = 0; port_num < 4; port_num++) {
-					g.fillRect(this.get_port()[port_num][0], this.get_port()[port_num][1], 5, 5);
+					g.fillRect(this.get_port()[port_num][0]+shift_x[port_num], this.get_port()[port_num][1]+shift_y[port_num], 5, 5);
 				}
 			}
 		}

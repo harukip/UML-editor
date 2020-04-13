@@ -93,22 +93,30 @@ public  class My_Menu_Item extends JMenuItem {
 						// TODO Auto-generated method stub
 						int[] usage = c.get_group_usage();
 						Composite[] group_list = c.get_groups();
-						Integer[] indexs_for_group = c.get_obj_in_range();
-						List<Integer> avaliable_pos = new ArrayList<Integer>();
-						if(indexs_for_group.length > 0) {
+						Integer[] indexs_for_ungroup = c.get_obj_in_selected();
+						List<Integer> used_pos = new ArrayList<Integer>();
+						if(indexs_for_ungroup.length > 0) {
 							int max_group_len = -1, max_group = -1;
+							Integer obj_id = indexs_for_ungroup[0];
 							for(int group_pos = 0; group_pos < c.get_GROUP_NUM(); group_pos++) {
 								if(usage[group_pos] == 0) continue;
-								avaliable_pos.add((Integer)group_pos);
-								List<Integer> list = group_list[group_pos].getList(); 
-								if(list.size() > max_group_len) {
-									max_group_len = list.size();
-									max_group = group_pos;
+								Composite g = group_list[group_pos];
+								if(!used_pos.contains((Integer)group_pos)) {
+									used_pos.add((Integer)group_pos);
+								}
+								if(g.find_obj_group(obj_id)) {
+									List<Integer> list = group_list[group_pos].getList(); 
+									if(list.size() > max_group_len) {
+										max_group_len = list.size();
+										max_group = group_pos;
+									}
 								}
 							}
-							for(Integer pos:avaliable_pos) {
-								if(group_list[(int)pos].get_parent_id() == max_group) {
-									group_list[(int)pos].set_parent_id(-1);
+							if(used_pos.size() > 0) {
+								for(Integer pos:used_pos) {
+									if(group_list[(int)pos].get_parent_id() == max_group) {
+										group_list[(int)pos].set_parent_id(-1);
+									}
 								}
 							}
 							c.set_groups(max_group, null);

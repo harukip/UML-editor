@@ -295,16 +295,28 @@ public class My_Canvas extends JPanel{
 		return groups;
 	}
 	public void set_groups(int idx, Composite g) {
-		groups[idx] = g;
+		if(idx != -1) groups[idx] = g;
 	}
 	public int[] get_group_usage() {
 		return group_usage;
 	}
 	public void set_group_usage(int idx, int val) {
-		group_usage[idx] = val;
+		if(idx != -1) group_usage[idx] = val;
 	}
 	public int get_GROUP_NUM() {
 		return GROUP_NUM;
+	}
+	public Integer[] get_obj_in_selected() {
+		List<Integer> list = new ArrayList<Integer>();
+		Integer[] output;
+		for(int i = 0; i < obj_count; i++) {
+			if(my_Objects[i].is_selected()) list.add(i);
+		}
+		output = new Integer[list.size()];
+		for(int i = 0; i < list.size(); i++) {
+			output[i] = list.get(i);
+		}
+		return output;
 	}
 	private int obj_count = 0, line_count = 0, x, y;
 	private int GROUP_NUM = 100;
