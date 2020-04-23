@@ -89,7 +89,7 @@ public class Basic_Object {
 	private String name = "";
 	private boolean selected = false;
 	private int[][]port = new int[4][2];
-	private int depth, x, y, type, obj_width = 100, obj_height = 150;
+	private int depth, x, y, type, obj_width = 100, obj_height = 100;
 	
 	public static class Class_Object extends Basic_Object{
 		public Class_Object() {
@@ -120,7 +120,7 @@ public class Basic_Object {
 		public Use_Class_Object() {
 			this.set_type(5);
 			this.set_width(100);
-			this.set_height(50);
+			this.set_height(100);
 		}
 		@Override
 		public void draw(Graphics g) {
