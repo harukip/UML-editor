@@ -1,6 +1,8 @@
 package shapes;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.List;
+import java.util.Vector;
 
 public abstract class Shape {
 	private boolean select = false;
@@ -13,4 +15,9 @@ public abstract class Shape {
 	public boolean isinside(Point p) {return false;}
 	public boolean isinarea(Point start, Point end) {return false;}
 	public Shape gettop(Point p) {return null;}
+	public int getdepth() {return -1;}
+	public Point getposition() {return null;}
+	public List<Port> getPorts(){return null;}
+	public int closetoport(Point start) {return -1;}
+	public Vector<Shape> getchilds(){return null;}
 }

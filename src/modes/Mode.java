@@ -5,7 +5,6 @@ import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import GUI.Canvas;
-import shapes.RectObject;
 import shapes.Shape;
 
 public abstract class Mode implements MouseListener{
@@ -35,8 +34,8 @@ public abstract class Mode implements MouseListener{
 		for(int i = 0; i < objs.size(); i++) {
 			if(objs.elementAt(i).isinside(start)) {
 				Shape currentShape = objs.elementAt(i).gettop(start);
-				if(((RectObject)currentShape).getdepth() > max_depth) {
-					max_depth = ((RectObject)currentShape).getdepth();
+				if(currentShape.getdepth() > max_depth) {
+					max_depth = currentShape.getdepth();
 					topShape_1 = currentShape;
 				}
 			}
@@ -53,8 +52,8 @@ public abstract class Mode implements MouseListener{
 				for(int i = 0; i < objs.size(); i++) {
 					if(objs.elementAt(i).isinside(end)) {
 						Shape currentShape = objs.elementAt(i).gettop(end);
-						if(((RectObject)currentShape).getdepth() > max_depth) {
-							max_depth = ((RectObject)currentShape).getdepth();
+						if(currentShape.getdepth() > max_depth) {
+							max_depth = currentShape.getdepth();
 							topShape_2 = currentShape;
 						}
 					}
