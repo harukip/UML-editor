@@ -15,7 +15,7 @@ public class RectObject extends Shape{
 	public RectObject(Point left_top, int d) {
 		position = new Point((int)(left_top.getX()+width/2), (int)(left_top.getY()+height/2));
 		for(int i = 0; i < 4; i++) {
-			System.out.print("Initialize port"+ i);
+			//System.out.print("Initialize port"+ i);
 			ports.add(new Port(this, i));
 		}
 		depth = d;
