@@ -18,7 +18,7 @@ public class CompositionBtn extends button{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("click CompositionBtn");
+		//System.out.println("click CompositionBtn");
 		if(!task_bar.getMode().getmode().equals(my_mode)) {
 			task_bar.setmode(new Composition_mode(task_bar.getMode().getCanvas()));
 			task_bar.updateIcons();

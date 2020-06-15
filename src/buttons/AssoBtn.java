@@ -18,7 +18,7 @@ public class AssoBtn extends button{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("click AssoBtn");
+		//System.out.println("click AssoBtn");
 		if(!task_bar.getMode().getmode().equals(my_mode)) {
 			task_bar.setmode(new Assocline_mode(task_bar.getMode().getCanvas()));
 			task_bar.updateIcons();

@@ -4,7 +4,6 @@ import java.awt.Graphics;
 public class GenerlizationLine extends Line_Object{
 	public GenerlizationLine(Port s, Port d) {
 		super(s, d);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void draw(Graphics g) {

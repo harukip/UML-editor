@@ -18,7 +18,7 @@ public class GeneralizationBtn extends button{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("click GeneralizationBtn");
+		//System.out.println("click GeneralizationBtn");
 		if(!task_bar.getMode().getmode().equals(my_mode)) {
 			task_bar.setmode(new Generlization_mode(task_bar.getMode().getCanvas()));
 			task_bar.updateIcons();

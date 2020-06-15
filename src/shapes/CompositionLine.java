@@ -4,7 +4,6 @@ import java.awt.Graphics;
 public class CompositionLine extends Line_Object{
 	public CompositionLine(Port s, Port d) {
 		super(s, d);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void draw(Graphics g) {

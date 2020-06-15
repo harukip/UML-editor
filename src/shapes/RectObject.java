@@ -69,7 +69,6 @@ public class RectObject extends Shape{
 	
 	@Override
 	public String gettype() {
-		// TODO Auto-generated method stub
 		return "RectObject";
 	}
 	

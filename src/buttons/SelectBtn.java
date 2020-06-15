@@ -17,9 +17,9 @@ public class SelectBtn extends button{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("click select");
+		//System.out.println("click select");
 		if(!task_bar.getMode().getmode().equals(my_mode)) {
-			System.out.println("change to select");
+			//System.out.println("change to select");
 			task_bar.setmode(new Select_mode(task_bar.getMode().getCanvas()));
 			task_bar.updateIcons();
 		}

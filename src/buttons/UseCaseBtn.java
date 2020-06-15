@@ -18,7 +18,7 @@ public class UseCaseBtn extends button{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("click UseCaseBtn");
+		//System.out.println("click UseCaseBtn");
 		if(!task_bar.getMode().getmode().equals(my_mode)) {
 			task_bar.setmode(new Use_case_mode(task_bar.getMode().getCanvas()));
 			task_bar.updateIcons();

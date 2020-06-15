@@ -13,7 +13,6 @@ public class Line_Object extends Shape{
 
 	@Override
 	public String gettype() {
-		// TODO Auto-generated method stub
 		return "Line";
 	}
 	
