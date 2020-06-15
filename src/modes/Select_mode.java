@@ -21,15 +21,21 @@ public class Select_mode extends Mode {
 	public void mouseClicked(MouseEvent e) {
 		Point mouse = new Point(e.getX(), e.getY());
 		Vector<Shape> objs = getCanvas().getObjects();
+		int tmp_depth = -1;
+		Shape tmpTopShape = null;
 		for(Shape o:objs) {
 			o.setselect(false);
 		}
 		for(int i = 0; i < objs.size(); i++) {
-			Shape currentObj = objs.elementAt(i);
-				if(currentObj.isinside(mouse)) {
-					currentObj.setselect(true);
+			if(objs.elementAt(i).isinside(mouse)) {
+				Shape currentShape = objs.elementAt(i).gettop(mouse);
+				if(((RectObject)currentShape).getdepth() > tmp_depth) {
+					tmp_depth = ((RectObject)currentShape).getdepth();
+					tmpTopShape = objs.elementAt(i);
 				}
 			}
+		}
+		if(tmpTopShape != null) tmpTopShape.setselect(true);
 	}
 
 	@Override
@@ -44,8 +50,7 @@ public class Select_mode extends Mode {
 				Shape currentShape = objs.elementAt(i).gettop(start);
 				if(((RectObject)currentShape).getdepth() > top_depth) {
 					top_depth = ((RectObject)currentShape).getdepth();
-					if(currentShape.gettype().equals("Composite")) topShape = currentShape;
-					else topShape = currentShape;
+					topShape = currentShape;
 					tmpShape = objs.elementAt(i);
 				}
 			}
