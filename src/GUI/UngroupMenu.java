@@ -5,7 +5,6 @@ import java.util.Vector;
 
 import javax.swing.JMenuItem;
 
-import shapes.Composite;
 import shapes.Shape;
 
 public class UngroupMenu extends JMenuItem implements ActionListener{
@@ -31,12 +30,11 @@ public class UngroupMenu extends JMenuItem implements ActionListener{
 			}
 		}
 		if(select_count == 1 && group_index != -1) {
-			Vector<Shape> childs = ((Composite)(objs.elementAt(group_index))).getchilds();
+			Vector<Shape> childs = objs.elementAt(group_index).getchilds();
 			for(Shape o:childs) {
 				canvas.addobj(o);
 			}
 			objs.removeElementAt(group_index);
 		}
 	}
-
 }

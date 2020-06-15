@@ -69,7 +69,7 @@ public class Composite extends Shape{
 		for(Shape o:childs) {
 			switch (o.gettype()) {
 			case "RectObject":
-				tmpPoint = ((RectObject)o).getposition();
+				tmpPoint = o.getposition();
 				break;
 			case "Composite":
 				tmpPoint = origin;

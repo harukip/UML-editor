@@ -4,7 +4,6 @@ import java.awt.event.MouseEvent;
 
 import GUI.Canvas;
 import shapes.CompositionLine;
-import shapes.RectObject;
 import shapes.Shape;
 
 public class Composition_mode extends Mode {
@@ -25,10 +24,10 @@ public class Composition_mode extends Mode {
 	@Override
 	public Shape newobj(Point p) {
 		return new CompositionLine(
-				((RectObject)topShape_1).getPorts().get(
-						((RectObject)topShape_1).closetoport(start)), 
-				((RectObject)topShape_2).getPorts().get(
-						((RectObject)topShape_2).closetoport(end)));
+				topShape_1.getPorts().get(
+						topShape_1.closetoport(start)), 
+				topShape_2.getPorts().get(
+						topShape_2.closetoport(end)));
 	}
 
 }

@@ -4,7 +4,6 @@ import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 import GUI.Canvas;
-import shapes.RectObject;
 import shapes.Shape;
 
 public class Select_mode extends Mode {
@@ -29,8 +28,8 @@ public class Select_mode extends Mode {
 		for(int i = 0; i < objs.size(); i++) {
 			if(objs.elementAt(i).isinside(mouse)) {
 				Shape currentShape = objs.elementAt(i).gettop(mouse);
-				if(((RectObject)currentShape).getdepth() > tmp_depth) {
-					tmp_depth = ((RectObject)currentShape).getdepth();
+				if(currentShape.getdepth() > tmp_depth) {
+					tmp_depth = currentShape.getdepth();
 					tmpTopShape = objs.elementAt(i);
 				}
 			}
@@ -48,8 +47,8 @@ public class Select_mode extends Mode {
 			if(objs.elementAt(i).isinside(start)) {
 				inside_count += 1;
 				Shape currentShape = objs.elementAt(i).gettop(start);
-				if(((RectObject)currentShape).getdepth() > top_depth) {
-					top_depth = ((RectObject)currentShape).getdepth();
+				if(currentShape.getdepth() > top_depth) {
+					top_depth = currentShape.getdepth();
 					topShape = currentShape;
 					tmpShape = objs.elementAt(i);
 				}
@@ -79,7 +78,7 @@ public class Select_mode extends Mode {
 		if(press_on_top) {
 			press_on_top = false;
 			Point mouse = new Point(e.getX(), e.getY());
-			tmpShape.setposition(start, ((RectObject)topShape).getposition(), mouse);
+			tmpShape.setposition(start, topShape.getposition(), mouse);
 			tmpShape.updateport(getCanvas().getGraphics());
 			top_depth = -1;
 			topShape = null;
